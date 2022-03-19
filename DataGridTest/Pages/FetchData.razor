@@ -1,0 +1,57 @@
+﻿@page "/fetchdata"
+@using Blazorise;
+@using Blazorise.DataGrid;
+@using Data;
+
+
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+<DataGrid TItem="WeatherForecast" 
+          Data="Data"
+          DetailRowStartsVisible="false"
+          Responsive
+          ReadData="ReadData"
+          Resizable
+          PageSize="10"
+          ShowPageSizes
+          ShowPager
+          UseInternalEditing="false"
+          Sortable="false"
+          HeaderThemeContrast="ThemeContrast.Dark"
+          TotalItems="50">
+    <DataGridColumns>
+        <DataGridColumn TItem="WeatherForecast"
+                        Field="@nameof(WeatherForecast.Date)"
+                        Caption="Date"
+                        DisplayFormat="{0:d}" />
+        <DataGridColumn TItem="WeatherForecast"
+                        Field="@nameof(WeatherForecast.TemperatureC)"
+                        Caption="Temp. (C)" />
+        <DataGridColumn TItem="WeatherForecast"
+                        Field="@nameof(WeatherForecast.TemperatureF)"
+                        Caption="Temp. (F)" />
+        <DataGridColumn TItem="WeatherForecast"
+                        Field="@nameof(WeatherForecast.Summary)"
+                        Caption="Summary" />
+    </DataGridColumns>
+    <LoadingTemplate>
+        <Paragraph Italic>Loading...</Paragraph>
+    </LoadingTemplate>
+</DataGrid>
+
+@code {
+
+    private Data.WeatherForecast[]? Data;
+
+    private readonly Data.WeatherForecastService _weatherForecastService = new();
+
+    private async Task ReadData(Blazorise.DataGrid.DataGridReadDataEventArgs<Data.WeatherForecast> e)
+    {
+        Console.WriteLine(nameof(ReadData));
+        Data = await _weatherForecastService.GetForecastAsync(DateTime.Now);
+    }
+}
